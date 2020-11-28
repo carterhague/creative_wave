@@ -16,7 +16,7 @@
     <router-view />
   </div>
   <div id="footer">
-    <a href="https://github.com/BYU-CS-260-Winter-2020/lab-5-photo-bomb-carterhague">UPDATe THIS GitHub Classroom</a>
+    <a href="https://github.com/carterhague/creative_wave">GitHub Repo Link :)</a>
   </div>
 </div>
 </template>

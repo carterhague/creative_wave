@@ -4,12 +4,18 @@ const router = express.Router();
 
 // Configure multer so that it will upload to '/public/images'
 const multer = require('multer')
-const upload = multer({
-  dest: '../front-end/public/images/',
-  limits: {
-    fileSize: 10000000
-  }
+
+
+const storage = multer.diskStorage({ // notice you are calling the multer.diskStorage() method here, not multer()
+    destination: function(req, file, cb) {
+        cb(null, '../front-end/public/images/')
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
 });
+
+const upload = multer({storage});
 
 const users = require("./users.js");
 const User = users.model;
@@ -21,6 +27,7 @@ const photoSchema = new mongoose.Schema({
     ref: 'User'
   },
   path: String,
+  soundpath: String,
   title: String,
   description: String,
   created: {
@@ -32,16 +39,23 @@ const photoSchema = new mongoose.Schema({
 const Photo = mongoose.model('Photo', photoSchema);
 
 // upload photo
-router.post("/", validUser, upload.single('photo'), async (req, res) => {
+router.post("/", validUser, upload.fields([
+  { name: 'photo', maxCount: 1 },
+  { name: 'sound', maxCount: 1 }
+]), async (req, res) => {
   // check parameters
-  if (!req.file)
+  if (!req.files){
+    console.log("HERE");
     return res.status(400).send({
-      message: "Must upload a file."
+      message: "Must upload files."
     });
+  }
 
+  let test = req.files.photo[0];
   const photo = new Photo({
     user: req.user,
-    path: "/images/" + req.file.filename,
+    path: "/images/" + req.files.photo[0].filename,
+    soundpath: "/images/" + req.files.sound[0].filename,
     title: req.body.title,
     description: req.body.description,
   });

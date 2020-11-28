@@ -14,10 +14,10 @@
     <p class="photoDescription">{{this.photoData.description}}</p>
   </div>
   <div class="songControls">
-    <audio src="demo.mp3" controls></audio>
+    <audio :src="this.photoData.soundpath" controls></audio>
   </div>
   <div class="comments" v-if="haveComments">
-    <comments :comments="comments"/>
+    <comments :comments="comments" />
   </div>
   <div class="comments" v-else>
     <br>

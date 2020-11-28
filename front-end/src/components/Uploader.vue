@@ -20,6 +20,12 @@
           </div>
           <p v-if="error" class="error">{{error}}</p>
         </fieldset>
+        <fieldset>
+          <div class="soundInput">
+            <p>Choose an audio file...</p>
+            <input type="file" id="file-selector" accept=".mp3" @input="soundFileChanged">
+          </div>
+        </fieldset>
         <fieldset class="buttons">
           <button type="button" @click="close" class="pure-button">Close</button>
           <button type="submit" class="pure-button pure-button-primary right">Upload</button>
@@ -43,6 +49,7 @@ export default {
       description: '',
       url: '',
       file: null,
+      soundfile: null,
       error: '',
     }
   },
@@ -50,6 +57,9 @@ export default {
     fileChanged(event) {
       this.file = event.target.files[0];
       this.url = URL.createObjectURL(this.file);
+    },
+    soundFileChanged(event) {
+      this.soundfile = event.target.files[0];
     },
     close() {
       this.$emit('close');
@@ -62,9 +72,12 @@ export default {
         const formData = new FormData();
         formData.append('photo', this.file, this.file.name);
         formData.append('title', this.title);
+        formData.append('sound', this.soundfile, this.soundfile.name);
         formData.append('description', this.description);
+        console.log(formData);
         await axios.post("/api/photos", formData);
         this.file = null;
+        this.soundfile = null;
         this.url = "";
         this.title = "";
         this.description = "";
@@ -169,8 +182,17 @@ img {
   width: 200px;
 }
 
+.soundInput {
+  color: #111;
+  justify-content:space-between;
+}
+
 .buttons {
   display: flex;
   justify-content: space-between;
+}
+
+p {
+  color: #111;
 }
 </style>
