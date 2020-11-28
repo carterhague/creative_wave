@@ -6,16 +6,12 @@ const router = express.Router();
 const multer = require('multer')
 
 
-const storage = multer.diskStorage({ // notice you are calling the multer.diskStorage() method here, not multer()
-    destination: function(req, file, cb) {
-        cb(null, '../front-end/public/images/')
-    },
-    filename: function(req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now())
-    }
-});
-
-const upload = multer({storage});
+const upload = multer({
+  dest: '/var/www/music.flaminglasers.com/images/',
+  limits: {
+    fileSize: 10000000
+  }
+};
 
 const users = require("./users.js");
 const User = users.model;
